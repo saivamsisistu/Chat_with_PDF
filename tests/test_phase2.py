@@ -1,8 +1,14 @@
-from pdf_loader import extract_text_from_pdf, split_text_into_chunks
+import os
+import sys
+
+# Add the project root directory to Python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from src.pdf_loader import extract_text_from_pdf, split_text_into_chunks
 
 def test_phase2():
     # Step 1: Path to a sample PDF file
-    pdf_path = "src\Sai_Vams_Resume.pdf"  # Replace with your actual test file name
+    pdf_path = os.path.join(os.path.dirname(__file__), "..", "src", "Sai_Vams_Resume.pdf")
 
     # Step 2: Extract text
     text = extract_text_from_pdf(pdf_path)
