@@ -6,6 +6,8 @@ from langchain_community.vectorstores import FAISS
 load_dotenv()
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+if not GOOGLE_API_KEY:
+    raise ValueError("GOOGLE_API_KEY environment variable is not set")
 
 # Set embeddings model
 embedding_model = GoogleGenerativeAIEmbeddings(
@@ -16,7 +18,23 @@ embedding_model = GoogleGenerativeAIEmbeddings(
 def create_vectorstore(chunks):
     """
     Generate embeddings for chunks and store them in FAISS vector DB using Google embeddings.
+    
+    Args:
+        chunks (list): List of text chunks to embed
+        
+    Returns:
+        FAISS: The vector store instance
+        
+    Raises:
+        ValueError: If chunks is empty
+        Exception: For other embedding or storage errors
     """
-    vectorstore = FAISS.from_texts(chunks, embedding_model)
-    vectorstore.save_local("faiss_index")
-    return vectorstore
+    if not chunks:
+        raise ValueError("No text chunks provided for embedding")
+        
+    try:
+        vectorstore = FAISS.from_texts(chunks, embedding_model)
+        vectorstore.save_local("faiss_index")
+        return vectorstore
+    except Exception as e:
+        raise Exception(f"Error creating vector store: {str(e)}")
